@@ -1,7 +1,7 @@
-\d .opts
+\d .u
 .u.args: .z.x
 /Drop all at indices
-dropAll:{.[x;();_/;desc y]} 
+opts.dropAll:{.[x;();_/;desc y]} 
 
 / Pass 1b or 0b as typ to affirm/disaffirm that a param is used
 / For instance, we might have verbosity turned off by seeing if the quiet flag is present:
@@ -11,23 +11,23 @@ dropAll:{.[x;();_/;desc y]}
 / 0b
 addOpt:{[flags;typ;handler];
  isBool:-1h ~ type typ;
- val: first $[isBool;getBoolOpt;getRegOpt] each "--" ,/: "," vs (),flags;
+ val: first $[isBool;opts.getBoolOpt;opts.getRegOpt] each "--" ,/: "," vs (),flags;
  if[count val;
-  $[isBool;setBoolOpt;setRegOpt][typ;handler;val]];
+  $[isBool;opts.setBoolOpt;opts.setRegOpt][typ;handler;val]];
  }
 
-getRegOpt:{
+opts.getRegOpt:{
  l:where .u.args like x,"*";
  / Options where the param values are separate from the param flag (value is at next index)
  separated: x ~/: .u.args l;
  r:$[count separated;
   ?[separated;.u.args 1 + l;(count x,"=") _' .u.args l];
   ()];
- dropAll[`.u.args;l,1 + (l where separated)];
+ opts.dropAll[`.u.args;l,1 + (l where separated)];
  first r
  }
 
-setRegOpt:{[typ;handler;val];
+opts.setRegOpt:{[typ;handler;val];
  val: (first typ)$$[10h ~ type typ;" " vs val;val];
  $[-11h ~ type handler;
   handler set val;
@@ -36,12 +36,12 @@ setRegOpt:{[typ;handler;val];
   (handler 0) set (handler 1) val];
  }
 
-getBoolOpt:{
- dropAll[`.u.args;l:where .u.args ~\: x];
+opts.getBoolOpt:{
+ opts.dropAll[`.u.args;l:where .u.args ~\: x];
  0 < count l
  }
 
-setBoolOpt:{[b;handler;val];
+opts.setBoolOpt:{[b;handler;val];
  bval:b ~ val;
  $[-11h ~ type handler;
   handler set bval;
@@ -50,7 +50,7 @@ setBoolOpt:{[b;handler;val];
   (handler 0) set (handler 1) bval];
  }
 
-finalize:{
+opts.finalize:{
  if[any .u.args like "-*";
   '"Unhandled options: \n\t", "\n\t" sv .u.args where .u.args like "-*"];
  }
