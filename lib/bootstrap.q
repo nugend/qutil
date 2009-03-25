@@ -4,10 +4,10 @@
 
 .utl.requireV:{[x;v];
  pkgInfo: $[-11h ~ type x;
-  `file`package!(x;1 _ string x);
+  `file`package!(x;x);
   / If you pass in a symbol and subsequent characters, we treat the symbol as if it's a package
   0h ~ type x;
-  `file`package!(` sv x[0], `$"/" vs 1 _ x;1 _ string x[0]);
+  `file`package!(` sv x[0], `$"/" vs 1 _ x;x[0]);
   .utl.requireVH.findV[x;v]];
  / The convention used for packages will be to start by using an init file
  / Let the name of the file being loaded and the "package" if available be accessed
@@ -15,15 +15,16 @@
  if[not count key file; '"File '",(1 _ string file),"' not found"];
  oldFileLoading: .utl.FILELOADING;
  oldPkgLoading: .utl.PKGLOADING;
- .utl.PKGLOADING: $[x like "*.q";.utl.PKGLOADING;pkgInfo[`package]];
- .utl.FILELOADING: file;
+ `.utl.PKGLOADING set $[pkgInfo[`file] like "*.q";.utl.PKGLOADING;pkgInfo[`package]];
+ `.utl.FILELOADING set file;
+ result:1b;
  if[not file in .utl.LOADED;
   result:@[{system "l ", x;1b};1 _ string file;(::)];  / Catch errors here
   if[1b ~ result;.utl.LOADED,:file];
   ];
- .utl.FILELOADING: oldFileLoading;
- .utl.PKGLOADING: oldPkgLoading;
- $[1b ~ result;1b;'result];
+ `.utl.FILELOADING set oldFileLoading;
+ `.utl.PKGLOADING set oldPkgLoading;
+ $[1b ~ result;1b;'"Error loading '",(1 _ string file),"': ",result];
  }
 .utl.require:.utl.requireV[;""]
 
@@ -35,11 +36,12 @@
  matchingPackages: allPackages where allPackages like "*",packageName,"*";
  matchingPackages: matchingPackages where .utl.requireVH.makeFilter[v]  each matchingPackages;
  / This should be the highest available package meeting the requirements
- matchingPackage: first matchingPackages idesc (.utl.requireVH.numVNStr .utl.requireVH.VNStrPath @) each matchingPackages;
+ matchingPackage: first matchingPackages idesc .utl.requireVH.numVNStr .utl.requireVH.VNStrPath each matchingPackages;
  exactPackage: first allPackages where allPackages like "*",packageName;
- path: $[not null exactPackage;exactPackage;
+ path: $[(v ~ "") and not null exactPackage;exactPackage;
   not null matchingPackage;matchingPackage;
-  '"A matching package was not found for '",x,"' with version string '",y"'.  Paths searched:\n\t", "\n\t" sv string .utl.QPATH];
+  not null exactPackage;exactPackage;
+  '"A matching package was not found for '",x,"' with version string '",v,"'.  Paths searched:\n\t", "\n\t" sv string .utl.QPATH];
  packageSubName: $[1 < count pathComponents;`$ 1 _ string ` sv `$@[1 _ pathComponents;0;":",];()];
  file: ` sv path,packageSubName;
  package: 1 _ string ` sv (hsym last ` vs path),packageSubName;
@@ -67,10 +69,10 @@
 .utl.requireVH.parseVStr:{
  v: trim each "," vs x;
  pairs: {(0,0^1 + last x ss "[<>=]") _ x} each v; / Split the version specifiers into operator and number.
- .[pairs;(::;0);:;(("";(),"<";(),">";">=";"<=";"<>")!(=;<;>;>=;<=;<>)) pairs[;0]] / Create the comparators
+ .[pairs;(::;0);:;(("";(),"=";(),"<";(),">";">=";"<=";"<>")!(=;=;<;>;>=;<=;<>)) pairs[;0]] / Create the comparators
  }
 
 .utl.requireVH.makeFilter:{[vstr];
  if[vstr ~ "";:{1b}];
- {all x\: .utl.requireVH.VNStrPath y}[.utl.requireVH.cmpVNStr ./: .utl.requireVH.parseVStr each vstr]
+ {all x @\: .utl.requireVH.VNStrPath y}[.utl.requireVH.cmpVNStr ./: .utl.requireVH.parseVStr vstr]
  }
