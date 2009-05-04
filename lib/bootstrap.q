@@ -11,7 +11,7 @@
   `file`package!(` sv x[0], `$"/" vs 1 _ x;x[0]);
   .utl.requireVH.findV[x;v]];
  / The convention used for packages will be to start by using an init file
- file: $[-11h ~ type key pkgInfo[`file];pkgInfo[`file];` sv pkgInfo[`file],`init.q];
+ file: $[not 11h ~ type key pkgInfo[`file];pkgInfo[`file];` sv pkgInfo[`file],`init.q];
  if[not count key file; '"File '",(1 _ string file),"' not found"];
  oldFileLoading: .utl.FILELOADING;
  oldPkgLoading: .utl.PKGLOADING;
@@ -53,7 +53,7 @@
  matchingPackages: allPackages where allPackages like "*",packageName,"*";
  matchingPackages: matchingPackages where .utl.requireVH.makeFilter[v]  each matchingPackages;
  / Use the highest available package meeting the requirements
- matchingPackage: first matchingPackages idesc .utl.requireVH.numVNStr .utl.requireVH.VNStrPath each matchingPackages;
+ matchingPackage: first matchingPackages idesc (),.utl.requireVH.numVNStr .utl.requireVH.VNStrPath each matchingPackages;
  exactPackage: first allPackages where allPackages like "*",packageName;
  / If a Version String has been provided (not "") we want to use the most recent matching
  / package and *then* fall back to an exact package name match.
