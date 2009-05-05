@@ -16,7 +16,11 @@
  oldFileLoading: .utl.FILELOADING;
  oldPkgLoading: .utl.PKGLOADING;
  / Let the name of the file being loaded and the "package" if available be accessed
- `.utl.PKGLOADING set $[pkgInfo[`file] like "*.q";.utl.PKGLOADING;pkgInfo[`package]];
+ `.utl.PKGLOADING set $[(-11h ~ type x) and pkgInfo[`file] like "*init.q"; / Load literally specified packages smarter
+  first ` vs pkgInfo[`file];
+  pkgInfo[`file] like "*.q";
+  .utl.PKGLOADING;
+  pkgInfo[`package]];
  `.utl.FILELOADING set .utl.realPath file;
  result:1b;
  / The require function prevents files from being loaded that have already been loaded
@@ -50,7 +54,7 @@
  / The paths passed to require should be the same across platforms
  packageName: first pathComponents: "/" vs x;
  allPackages: raze {(` sv x,) each key x} each .utl.QPATH;
- matchingPackages: allPackages where allPackages like "*",packageName,"*";
+ matchingPackages: allPackages where ('[last;vs[`]] each allPackages) like "*",packageName,"*"; / Only consider the last part of the available paths as package names
  matchingPackages: matchingPackages where .utl.requireVH.makeFilter[v]  each matchingPackages;
  / Use the highest available package meeting the requirements
  matchingPackage: first matchingPackages idesc (),.utl.requireVH.numVNStr .utl.requireVH.VNStrPath each matchingPackages;
