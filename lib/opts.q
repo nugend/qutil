@@ -11,7 +11,9 @@ opts.dropAll:{.[x;();_/;desc y]}
 / 0b
 addOpt:{[flags;typ;handler];
  isBool:-1h ~ type typ;
- val: first $[isBool;opts.getBoolOpt;opts.getRegOpt] each "--" ,/: "," vs (),flags;
+ val: $[isBool;opts.getBoolOpt;opts.getRegOpt] each "--" ,/: "," vs (),flags;
+ / If the option was absent, an empty list is returned, filter these out
+ val: first val where not () ~/: val;
  if[count val;
   $[isBool;opts.setBoolOpt;opts.setRegOpt][typ;handler;val]];
  }
