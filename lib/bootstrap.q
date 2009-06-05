@@ -2,7 +2,7 @@
 .utl.FILELOADING:`
 .utl.PKGLOADING:""
 
-.utl.requireV:{[x;v];
+.utl.baseLoadV:{[x;v;allowReload];
  pkgInfo: $[-11h ~ type x;
   `file`package!(x;x);
   / If a generic list is passed, we treat it as a symbol and characters, using the symbol as a package name
@@ -21,16 +21,20 @@
  result:1b;
  / The require function prevents files from being loaded that have already been loaded
  / TODO:It is not smart enough to ignore a differently versioned module yet
- if[not file in .utl.LOADED;
+ if[allowReload or not file in .utl.LOADED;
   / NOTE:Consider supporting a debug flag to allow errors on require go uncaught
   result:@[{system "l ", x;1b};1 _ string file;(::)];  / The file is loaded and errors are caught
-  if[1b ~ result;.utl.LOADED,:file];
+  if[1b ~ result;.[`.utl.LOADED;();union;file]];
   ];
  `.utl.FILELOADING set oldFileLoading;
  `.utl.PKGLOADING set oldPkgLoading;
  $[1b ~ result;1b;'"Error loading '",(1 _ string file),"': ",result];
  }
-.utl.require:.utl.requireV[;""]
+
+.utl.loadV:.utl.baseLoadV[;;1b]
+.utl.load:.utl.baseLoadV[;"";1b]
+.utl.requireV:.utl.baseLoadV[;;0b]
+.utl.require:.utl.baseLoadV[;"";0b]
 
 /Get the real path of a filehandle cross platform (hopefully)
 .utl.realPath:{
