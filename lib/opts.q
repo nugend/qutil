@@ -1,11 +1,11 @@
-\d .u
-.u.args: .z.x
+\d .utl
+.utl.args: .z.x
 /Drop all at indices
 opts.dropAll:{.[x;();_/;desc y]} 
 
 / Pass 1b or 0b as typ to affirm/disaffirm that a param is used
 / For instance, we might have verbosity turned off by seeing if the quiet flag is present:
-/ .u.addOpt["quiet,silent";0b;`verbose]
+/ .utl.addOpt["quiet,silent";0b;`verbose]
 / q script.q --quiet
 / q) verbose
 / 0b
@@ -19,13 +19,13 @@ addOpt:{[flags;typ;handler];
  }
 
 opts.getRegOpt:{
- l:where .u.args like x,"*";
+ l:where .utl.args like x,"*";
  / Options where the param values are separate from the param flag (value is at next index)
- separated: x ~/: .u.args l;
+ separated: x ~/: .utl.args l;
  r:$[count separated;
-  ?[separated;.u.args 1 + l;(count x,"=") _' .u.args l];
+  ?[separated;.utl.args 1 + l;(count x,"=") _' .utl.args l];
   ()];
- opts.dropAll[`.u.args;l,1 + (l where separated)];
+ opts.dropAll[`.utl.args;l,1 + (l where separated)];
  first r
  }
 
@@ -39,7 +39,7 @@ opts.setRegOpt:{[typ;handler;val];
  }
 
 opts.getBoolOpt:{
- opts.dropAll[`.u.args;l:where .u.args ~\: x];
+ opts.dropAll[`.utl.args;l:where .utl.args ~\: x];
  0 < count l
  }
 
@@ -53,7 +53,7 @@ opts.setBoolOpt:{[b;handler;val];
  }
 
 opts.finalize:{
- if[any .u.args like "-*";
-  '"Unhandled options: \n\t", "\n\t" sv .u.args where .u.args like "-*"];
+ if[any .utl.args like "-*";
+  '"Unhandled options: \n\t", "\n\t" sv .utl.args where .utl.args like "-*"];
  }
 
