@@ -69,7 +69,14 @@ opts.setBoolOpt:{[b;handler;val];
  }
 
 opts.finalize:{
+ msg:"Unrecognized options: \n\t", "\n\t" sv .utl.args where .utl.args like "-*";
  if[any .utl.args like "-*";
-  '"Unhandled options: \n\t", "\n\t" sv .utl.args where .utl.args like "-*"];
+  $[(::) ~ x;
+   'msg;
+   [-1 msg;
+    -1 x;
+    exit 1]
+   ];
+  ];
  }
 
