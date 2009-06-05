@@ -17,7 +17,7 @@
  oldPkgLoading: .utl.PKGLOADING;
  / Let the name of the file being loaded and the "package" if available be accessed
  `.utl.PKGLOADING set $[pkgInfo[`file] like "*.q";.utl.PKGLOADING;pkgInfo[`package]];
- `.utl.FILELOADING set file;
+ `.utl.FILELOADING set .utl.realPath file;
  result:1b;
  / The require function prevents files from being loaded that have already been loaded
  / TODO:It is not smart enough to ignore a differently versioned module yet
@@ -31,6 +31,15 @@
  $[1b ~ result;1b;'"Error loading '",(1 _ string file),"': ",result];
  }
 .utl.require:.utl.requireV[;""]
+
+/Get the real path of a filehandle cross platform (hopefully)
+.utl.realPath:{
+ rPath:{[absm;p] $[p like absm;p;` sv (hsym `$system "cd"), (`$1 _ string p)]};
+ $["w" ~ (string .z.o) 0;
+  rPath[":[A-z]:*";x];
+  rPath[":/*";x]
+  ]
+ }
 
 .utl.requireVH:((),`)!(),(::)
 .utl.requireVH.findV:{[x;v];
