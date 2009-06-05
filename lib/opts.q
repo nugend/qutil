@@ -5,7 +5,7 @@ opts.dropAll:{.[x;();_/;desc y]}
 
 / Pass 1b or 0b as typ to affirm/disaffirm that a param is used
 / For instance, we might have verbosity turned off by seeing if the quiet flag is present:
-/ .opts.addOpt["quiet,silent";0b;`verbose]
+/ .u.addOpt["quiet,silent";0b;`verbose]
 / q script.q --quiet
 / q) verbose
 / 0b
