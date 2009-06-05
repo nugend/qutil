@@ -1,3 +1,41 @@
-To use the bootstrap functionality which provides some basic utilities (initially file requiring), append the contents of q.q to your own q.q.  You can customize the environment variable used for the library search path by changing the argument passed to that function (it is defaulted to `QPATH).  This adds the function .u.require, which can be used to load any files or packages in the search paths).
+== ABOUT ==
 
+qutil provides several different common utility
+functionalities for use with Q programs.  These currently include:
 
+* an option parsing facility as an alternative to .Q.opt
+* a file loading facility based on a pathlist and supporting
+  version numbers
+
+== INSTALLATION == 
+
+Unzip qutil to whichever location you desire.
+
+If you plan on using the file loading facility you must add
+the code in q.q to your Q installation's q.q
+
+You can customize the environment variable used for the library
+search path by changing the argument passed to that function
+(it is defaults to $QPATH). This will cause the file
+qutil/lib/bootstrap.q to be loaded and will expose the file
+loading functions.  The paths in the environment variable
+should be separated by colons.
+
+== LICENSE ==
+
+This code is licensed under an MIT license.  See LICENSE for
+the full text.
+
+== MISC ==
+
+While you are under no obligation to do so, if you have
+changes to the code that you feel would be useful to others,
+please contribute them back.  If you have suggestions,
+please make them.  If you have found a bug, please report
+it.
+
+== CONTACT ==
+
+Daniel Nugent 
+nugend@gmail.com
+http://github.com/DannoHung/qutil
