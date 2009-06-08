@@ -1,0 +1,11 @@
+; This is my first section
+[first section]
+foo:2
+blah=1
+ 2 3 4
+foo:5
+#this is my second
+[DEFAULT]
+hah:3
+foo=1
+blah:4
