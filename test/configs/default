@@ -1,0 +1,5 @@
+[foo]
+bar:2
+[DEFAULT]
+bar:3
+baz:4
