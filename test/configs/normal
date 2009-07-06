@@ -3,6 +3,7 @@
 foo:2
 blah=1
  2 3 4
+	5 6
 foo:5
 #this is my second
 [DEFAULT]
