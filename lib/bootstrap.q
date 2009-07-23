@@ -50,10 +50,11 @@
  }
 
 .utl.requireVH:((),`)!(),(::)
+.utl.requireVH.allPackagePaths:{raze {(` sv x,) each key x} each .utl.QPATH}
 .utl.requireVH.findV:{[x;v];
  / The paths passed to require should be the same across platforms
  packageName: first pathComponents: "/" vs x;
- allPackages: raze {(` sv x,) each key x} each .utl.QPATH;
+ allPackages: .utl.requireVH.allPackagePaths[];
  matchingPackages: allPackages where ('[last;vs[`]] each allPackages) like "*",packageName,"*"; / Only consider the last part of the available paths as package names
  matchingPackages: matchingPackages where .utl.requireVH.makeFilter[v]  each matchingPackages;
  / Use the highest available package meeting the requirements
