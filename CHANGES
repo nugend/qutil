@@ -1,2 +1,8 @@
+VERSION 1.0 -- 2009.07.22
+* NONCOMPATIBLE - Changed package-name/version number separator from '.' to '-'
+* Fixed bug where some version numbers would be incorrectly seen as larger (ie: 1.11 was greater than 2.0)
+* Added init.q file to qutil library, does *not* load bootstrap.q
+* Added config_parse code to parse INI style files (should be able to parse same files as Python's ConfigParser module)
+
 VERSION 0.1 -- 2009.05.25
 * Initial Version
