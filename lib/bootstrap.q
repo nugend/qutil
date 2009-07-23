@@ -84,12 +84,14 @@
  }
 
 / Create ordinal numbers from a list of Version Number Strings (Because a Version Number String could ostensibly have infinite depth, we need to work on them in groupings)
-.utl.requireVH.numVNStr:{[vns];
- if[not count vns;:0];
- vns:"I"$"." vs' (),/:vns;
+.utl.requireVH.numVNStr:{[vns0];
+ if[not count vns0;:0];
+ vns:"I"$"." vs' (),/:vns0;
  s: max count each vns;
  ns:{@[x#0;til count y;:;y]}[s] each vns;   / Fill out each list with 0's
- sum each ns *\: reverse `int$10 xexp' til s / Get the total version numbers
+ mvn:max each flip ns;
+ exponents: reverse sums reverse ?[(1 _ mvn) > 0;1+`int$log[1 _ mvn] div log[10];1],0;
+ sum each ns *\: `long$10 xexp' exponents / Get the total version numbers
  }
 
 / Get a Version Number String from the last element of a path
