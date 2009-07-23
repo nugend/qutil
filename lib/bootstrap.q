@@ -95,7 +95,7 @@
  }
 
 / Get a Version Number String from the last element of a path
-.utl.requireVH.VNStrPath:{"." sv string 1 _ ` vs last ` vs x}
+.utl.requireVH.VNStrPath:{`char$raze 1 _ "-" vs string last ` vs x}
 
 / Create a pair of operator and Version Number String
 .utl.requireVH.parseVStr:{
