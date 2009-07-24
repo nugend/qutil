@@ -2,10 +2,11 @@
   before{
     `.utl.QPATH mock .tst.testFilePath `testLoaderFiles;
     `.utl.LOADED mock .utl.LOADED;
+    `.utl.PKGSLOADED mock .utl.PKGSLOADED;
     };
   should["search the specified path location for packages"]{
-    allFiles: 1 _' string key .utl.QPATH;
-    count[.utl.requireVH.findV[;""] each allFiles] musteq count allFiles;
+    allFiles: string key .utl.QPATH;
+    count[.utl.requireVH.findV[;"";1b] each allFiles] musteq count allFiles;
     };
   should["should not change the currently loading package when explicitly loading an individual file from a different package"]{
     / This is because despite the fact that a file is being loaded from a package, a different package is not actually being loaded
@@ -26,6 +27,21 @@
   should["be able to accept a package name to be loaded"]{
     mustnotthrow[();{.utl.require "package"}];
     };
+  should["be able to load nested packages from package strings"]{
+    mustnotthrow[();{.utl.require "nested"}];
+    };
+  should["be able to load nested packages from file handles"]{
+    mustnotthrow[();{.utl.require x}[.tst.testFilePath `testLoaderFiles`nested]];
+    };
+  should["be able to load non-conflicting packages successively"]{
+    .utl.requireV["vpkg";"<1.2"];
+    mustnotthrow[();{.utl.require "vpkg"}];
+    mustnotthrow[();{.utl.requireV["vpkg";">0.1"]}];
+    };
+  should["throw an error when attmepting to load a conflicting package"]{
+    .utl.requireV["vpkg";">1.2"];
+    mustthrow[();{.utl.requireV["vpkg";"<1.2"]}];
+    };
   };
 
 .tst.desc["A Package Finder"]{
@@ -33,14 +49,17 @@
     `.utl.QPATH mock .tst.testFilePath `testLoaderFiles;
     `version mock "";
     `.utl.LOADED mock .utl.LOADED;
+    `.utl.PKGSLOADED mock .utl.PKGSLOADED;
     };
   should["choose an exact package name match if the version string argument is empty"]{
     .utl.require "vpkg";
     version mustmatch "trunk";
     .utl.LOADED:();
+    .utl.PKGSLOADED:enlist[""]!enlist[`:];
     .utl.require "vpkg-0.1.2";
     version mustmatch "0.1.2";
     .utl.LOADED:();
+    .utl.PKGSLOADED:enlist[""]!enlist[`:];
     .utl.require "vpkg-1.2.1";
     version mustmatch "1.2.1";
     };
@@ -48,17 +67,17 @@
     .utl.requireV["vpkg";"<1.2"];
     version mustmatch "0.1.2";
     .utl.LOADED:();
+    .utl.PKGSLOADED:enlist[""]!enlist[`:];
     .utl.requireV["vpkg";"<2.2"];
     version mustmatch "1.2.1";
     .utl.LOADED:();
+    .utl.PKGSLOADED:enlist[""]!enlist[`:];
     .utl.requireV["vpkg";">0.5"];
     version mustmatch "1.2.1";
-    .utl.LOADED:();
     };
   should["fallback to an exact package name match if there is no matching version"]{
     .utl.requireV["vpkg";">3.5"];
     version mustmatch "trunk";
-    .utl.LOADED:();
     };
   };
 
