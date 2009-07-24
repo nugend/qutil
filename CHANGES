@@ -1,3 +1,7 @@
+VERSION 1.1 -- 2009.07.24
+* Made loader capable of handling nested packages more robustly
+* Made loader capable of detecting conflicting required package versions
+
 VERSION 1.0 -- 2009.07.22
 * NONCOMPATIBLE - Changed package-name/version number separator from '.' to '-'
 * Fixed bug where some version numbers would be incorrectly seen as larger (ie: 1.11 was greater than 2.0)
