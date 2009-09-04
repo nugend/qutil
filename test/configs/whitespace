@@ -1,0 +1,11 @@
+[foo]
+baz:2
+
+[DEFAULT]
+
+bar:3
+
+ 2
+	5
+baz:4
+

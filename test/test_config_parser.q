@@ -65,6 +65,11 @@
   should["ignore lines beginning with semi-colon"]{
     mustnotthrow[();{.utl.parseRawConfig configFile `semicolonComment}];
     };
+  should["ignore lines containing only whitespace"]{
+    mustnotthrow[();{.utl.parseRawConfig configFile `whitespace}];
+    cfg: .utl.parseRawConfig configFile `whitespace;
+    cfg["DEFAULT";"bar"] mustmatch "3 2\t5";
+    };
   should["have the DEFAULT section in the raw configs if one was present"]{
     cfg: .utl.parseRawConfig configFile `normal; 
     "DEFAULT" mustin key cfg;
