@@ -34,6 +34,11 @@ please contribute them back.  If you have suggestions,
 please make them.  If you have found a bug, please report
 it.
 
+To run the tests in test_require, explicitly pass the test
+files to the qspec runner.  This is because executable q
+files were needed to properly test the code loading capacities
+and the qspec runner tries to inadvertently load these files.
+
 == CONTACT ==
 
 Daniel Nugent 
