@@ -9,28 +9,44 @@ opts.dropAll:{.[x;();_/;desc y]}
 / q script.q --quiet
 / q) verbose
 / 0b
-addOpt:{[flags;typ;handler];
- isBool:-1h ~ type typ;
- / Get all candidate options from the arguments
- val: $[isBool;opts.getBoolOpt;opts.getRegOpt] each "--" ,/: "," vs (),flags;
- / If the option was absent, an empty list is returned, filter these out
- val: first val where not () ~/: val;
- if[count val;
-  $[isBool;opts.setBoolOpt;opts.setRegOpt][typ;handler;val]];
- }
 
 / Regular options are only invoked when there is a value available
-/ Providing default values was considered to be overkill
+addOpt:{[flags;typ;handler];
+  isBool:-1h ~ type typ;
+  / Get all candidate options from the arguments
+  val: opts.filterVals $[isBool;opts.getBoolOpt;opts.getRegOpt] each opts.filterFlags flags;
+  if[count val;
+    $[isBool;
+      opts.setBoolOpt[typ;handler;val];
+      opts.setRegOpt[typ;handler;1b;val]
+      ];
+    ];
+  }
+
+/ Default value options are always invoked
+addOptDef:{[flags;typ;default;handler];
+  if[-1h ~ type typ; '"Default value options cannot be boolean flags"];
+  val:opts.filterVals opts.getRegOpt each opts.filterFlags flags;
+  $[count val;
+    opts.setRegOpt[typ;handler;1b;val];
+    opts.setRegOpt[typ;handler;0b;default]
+    ];
+  }
+
+opts.filterFlags:{"--" ,/: "," vs (),x}
+opts.filterVals:{first x where not () ~/: x}
+
 opts.getRegOpt:{
- l:where .utl.args like x,"*";
- / Options where the param values are separate from the param flag (value is at next index)
- separated: x ~/: .utl.args l;
- r:$[count separated;
-  ?[separated;.utl.args 1 + l;(count x,"=") _' .utl.args l];
-  ()];
- opts.dropAll[`.utl.args;l,1 + (l where separated)];
- first r
- }
+  l:where .utl.args like x,"*";
+  / Options where the param values are separate from the param flag (value is at next index)
+  separated: x ~/: .utl.args l;
+  r:$[count separated;
+    ?[separated;.utl.args 1 + l;(count x,"=") _' .utl.args l];
+    ()
+    ];
+  opts.dropAll[`.utl.args;l,1 + (l where separated)];
+  first r
+  }
 
 / The typ is really only expected to be a char list or a single char
 / If it is a char list, it is assumed that the value will be a space separated list of arguments
@@ -39,20 +55,23 @@ opts.getRegOpt:{
 / q) intList
 / 20 30 40
 / Only the first character from a char list is used
-opts.setRegOpt:{[typ;handler;val];
- val: (first typ)$$[10h ~ type typ;" " vs val;val];
- $[-11h ~ type handler;
-  handler set val;
-  (1 = count handler);
-  handler val;
-  (handler 0) set (handler 1) val];
- }
+opts.setRegOpt:{[typ;handler;parseVal;val];
+  if[parseVal;
+    val: (first typ)$$[10h ~ type typ;" " vs val;val];
+    ];
+  $[-11h ~ type handler;
+    handler set val;
+    (1 = count handler);
+    handler val;
+    (handler 0) set (handler 1) val
+    ];
+  }
 
 / Boolean options are always invoked
 opts.getBoolOpt:{
- opts.dropAll[`.utl.args;l:where .utl.args ~\: x];
- 0 < count l
- }
+  opts.dropAll[`.utl.args;l:where .utl.args ~\: x];
+  0 < count l
+  }
 
 / Boolean options affirm or disaffirm that an option was set.
 / NOTE:If a function is the handler, it is *ONLY* called  when the flag 
@@ -60,23 +79,21 @@ opts.getBoolOpt:{
 / If a symbol/function pair is the handler, it is *ALWAYS* called with the bval
 / The reasoning is that any boolean variables mentioned should be set
 opts.setBoolOpt:{[b;handler;val];
- bval:b ~ val;  / This is basically not XOR.  The boolean value is true when both are the same
- $[-11h ~ type handler;
-  handler set bval;
-  (1 = count handler);
-  if[val;handler[bval]];
-  (handler 0) set (handler 1) bval];
- }
+  bval:b ~ val;  / This is basically not XOR.  The boolean value is true when both are the same
+  $[-11h ~ type handler;
+    handler set bval;
+    (1 = count handler);
+    if[val;handler[bval]];
+    (handler 0) set (handler 1) bval];
+  }
 
 opts.finalize:{
- msg:"Unrecognized options: \n\t", "\n\t" sv .utl.args where .utl.args like "-*";
- if[any .utl.args like "-*";
-  $[(::) ~ x;
-   'msg;
-   [-1 msg;
-    -1 x;
-    exit 1]
-   ];
-  ];
- }
+  msg:"Unrecognized options: \n\t", "\n\t" sv .utl.args where .utl.args like "-*";
+  if[any .utl.args like "-*";
+    $[(::) ~ x;
+      'msg;
+      [-1 msg; -1 x; exit 1]
+      ];
+    ];
+  }
 

@@ -22,6 +22,20 @@
     .utl.addOpt["baz";"S";`a];
     a musteq `trade
     };
+  should["throw an error if a default value option is given a boolean option type"]{
+    mustthrow[();{.utl.addOptDef["foo";1b;0b;`foo];}];
+    };
+  should["run a default value option whether the option is present or not"]{
+    mustthrow["foo";{.utl.addOptDef["foo";"I";1;{'"foo"}];}];
+    `.utl.args mock ();
+    mustthrow["foo";{.utl.addOptDef["foo";"I";1;{'"foo"}];}];
+    };
+  should["use default option value when the option is not present"]{
+    `.utl.args mock ();
+    `foo mock 0N;
+    .utl.addOptDef["foo";"I";1;`foo];
+    foo musteq 1;
+    };
   should["interpret options with a type of a character list as a list cast to the type of the first character"]{
     .utl.addOpt["bat";(),"I";`a];
     a musteq 10 20 30;
