@@ -1,3 +1,4 @@
+VERSION 2.0 -- 2009.09.09
 * Significantly enhanced functionality of option parser.  Breaks backwards compatibility
 ** New .utl.addDefOpt allows a default value to be specified for an option
 ** New .utl.addArg allows positional arguments to be specified
