@@ -1,3 +1,11 @@
+* Significantly enhanced functionality of option parser.  Breaks backwards compatibility
+** New .utl.addDefOpt allows a default value to be specified for an option
+** New .utl.addArg allows positional arguments to be specified
+** NONCOMPATIBLE - Options and arguments must now be finalized by calling .utl.parseArgs with an optional string value
+*** Any command line arguments that are not handled will cause an error to be raised.
+*** If the command line fails, a detailed description of the command line and available options will be printed
+* Fixed bug with config file parser where empty lines would cause the parser to fail an error to be raised.  Empty lines (blank or only white-space) are now ignored
+
 VERSION 1.1 -- 2009.07.24
 * Made loader capable of handling nested packages more robustly
 * Made loader capable of detecting conflicting required package versions

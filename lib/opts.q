@@ -1,7 +1,13 @@
 \d .utl
-.utl.args: .z.x
+arg.args: .z.x
 /Drop all at indices
-opts.dropAll:{.[x;();_/;desc y]} 
+arg.outHandle:-1;
+arg.dropAll:{.[x;();_/;desc y]} 
+arg.boolOpts:()
+arg.regOpts:()
+arg.regDefOpts:()
+arg.posArgs:()
+arg.typeDict:typeDict:(("*";0b;1b),"BXHIJEFCSMDZUVT")!("\"String Literal\"";"Disable Flag";"Enable Flag";"BOOL";"BYTE";"SHORT";"INT";"LONG";"REAL";"FLOAT";"CHARACTER";"SYMBOL";"YYYY.MM";"YYYY.MM.DD";"YYYY.MM.DDTHH:MM:SS.mmm";"HH:MM";"HH:MM:SS";"HH:MM:SS.mmm")
 
 / Pass 1b or 0b as typ to affirm/disaffirm that a param is used
 / For instance, we might have verbosity turned off by seeing if the quiet flag is present:
@@ -9,42 +15,75 @@ opts.dropAll:{.[x;();_/;desc y]}
 / q script.q --quiet
 / q) verbose
 / 0b
+addArg:{[typ;default;num;handler];
+  arg.posArgs,:enlist (typ;default;num;handler);
+  }
 
 / Regular options are only invoked when there is a value available
 addOpt:{[flags;typ;handler];
   isBool:-1h ~ type typ;
-  / Get all candidate options from the arguments
-  val: opts.filterVals $[isBool;opts.getBoolOpt;opts.getRegOpt] each opts.filterFlags flags;
-  if[count val;
-    $[isBool;
-      opts.setBoolOpt[typ;handler;val];
-      opts.setRegOpt[typ;handler;1b;val]
-      ];
+  arg:enlist (flags;typ;handler);
+  $[isBool;
+    arg.boolOpts,:arg;
+    arg.regOpts,:arg
     ];
   }
 
 / Default value options are always invoked
 addOptDef:{[flags;typ;default;handler];
-  if[-1h ~ type typ; '"Default value options cannot be boolean flags"];
-  val:opts.filterVals opts.getRegOpt each opts.filterFlags flags;
+  if[-1h ~ type typ; '"Default value options cannot be boolean"];
+  arg.regDefOpts,:enlist (flags;typ;default;handler);
+  }
+
+arg.processReg:{[flags;typ;handler];
+  / Get all candidate options from the arguments
+  val:arg.filterVals arg.getRegOpt each arg.filterFlags flags;
+  if[count val;arg.setReg[typ;handler;1b;val];];
+  }
+
+arg.processDefReg:{[flags;typ;default;handler];
+  val:arg.filterVals arg.getRegOpt each arg.filterFlags flags;
   $[count val;
-    opts.setRegOpt[typ;handler;1b;val];
-    opts.setRegOpt[typ;handler;0b;default]
+    arg.setReg[typ;handler;1b;val];
+    arg.setReg[typ;handler;0b;default]
     ];
   }
 
-opts.filterFlags:{"--" ,/: "," vs (),x}
-opts.filterVals:{first x where not () ~/: x}
+arg.processBool:{[flags;typ;handler];
+  / Get all candidate options from the arguments
+  val:arg.filterVals arg.getBoolOpt each arg.filterFlags flags;
+  if[count val;arg.setBool[typ;handler;val];];
+  }
 
-opts.getRegOpt:{
-  l:where .utl.args like x,"*";
+arg.processArg:{[typ;default;num;handler];
+  val:typ$$[(() ~ default) and count[arg.args] < first num;
+    '"Insufficient arguments";
+    count[arg.args] < first num;
+    count[arg.args]#arg.args;
+    0h < type num; / If num is a list (eg (),3), we consume all remaining values
+    arg.args;
+    first[num]#arg.args
+    ];
+  if[count[default] < first num;default:first[num]#default;];
+  $[0h < type num;
+    arg.setReg["";handler;0b;val,count[val] _ default];
+    arg.setReg["";handler;0b;$[1 ~ num;first;::] $[0 = count val;default;val]]
+    ];
+  arg.dropAll[`.utl.arg.args;til count val];
+  }
+
+arg.filterFlags:{"--" ,/: "," vs (),x}
+arg.filterVals:{first x where not () ~/: x}
+
+arg.getRegOpt:{
+  l:where arg.args like x,"*";
   / Options where the param values are separate from the param flag (value is at next index)
-  separated: x ~/: .utl.args l;
+  separated: x ~/: arg.args l;
   r:$[count separated;
-    ?[separated;.utl.args 1 + l;(count x,"=") _' .utl.args l];
+    ?[separated;arg.args 1 + l;(count x,"=") _' arg.args l];
     ()
     ];
-  opts.dropAll[`.utl.args;l,1 + (l where separated)];
+  arg.dropAll[`.utl.arg.args;l,1 + (l where separated)];
   first r
   }
 
@@ -55,7 +94,7 @@ opts.getRegOpt:{
 / q) intList
 / 20 30 40
 / Only the first character from a char list is used
-opts.setRegOpt:{[typ;handler;parseVal;val];
+arg.setReg:{[typ;handler;parseVal;val];
   if[parseVal;
     val: (first typ)$$[10h ~ type typ;" " vs val;val];
     ];
@@ -68,8 +107,8 @@ opts.setRegOpt:{[typ;handler;parseVal;val];
   }
 
 / Boolean options are always invoked
-opts.getBoolOpt:{
-  opts.dropAll[`.utl.args;l:where .utl.args ~\: x];
+arg.getBoolOpt:{
+  arg.dropAll[`.utl.arg.args;l:where arg.args ~\: x];
   0 < count l
   }
 
@@ -78,7 +117,7 @@ opts.getBoolOpt:{
 / is present (the bval is passed simply because a function *always* has at least one argument)
 / If a symbol/function pair is the handler, it is *ALWAYS* called with the bval
 / The reasoning is that any boolean variables mentioned should be set
-opts.setBoolOpt:{[b;handler;val];
+arg.setBool:{[b;handler;val];
   bval:b ~ val;  / This is basically not XOR.  The boolean value is true when both are the same
   $[-11h ~ type handler;
     handler set bval;
@@ -87,13 +126,70 @@ opts.setBoolOpt:{[b;handler;val];
     (handler 0) set (handler 1) bval];
   }
 
-opts.finalize:{
-  msg:"Unrecognized options: \n\t", "\n\t" sv .utl.args where .utl.args like "-*";
-  if[any .utl.args like "-*";
-    $[(::) ~ x;
-      'msg;
-      [-1 msg; -1 x; exit 1]
-      ];
+parseArgs:{
+  output:("";());
+  output[0],: raze arg.argMessage .' arg.posArgs;
+  if[count arg.regDefOpts;
+    output: output,'raze each flip arg.optDefMessage .' arg.regDefOpts;
+    ];
+  if[count arg.boolOpts,arg.regOpts;
+    output: output,'raze each flip arg.optMessage .' arg.boolOpts,arg.regOpts;
+    ];
+  r:@[;(::);(::)]{
+    arg.processBool .' arg.boolOpts;
+    arg.processReg .' arg.regOpts;
+    arg.processDefReg .' arg.regDefOpts;
+    arg.processArg .' arg.posArgs;
+    arg.handleUnrecognized[];
+    };
+  if[(10h ~ type r) or not 0 = count arg.args;
+    if[10h ~ type r; arg.outHandle "error: ", r];
+    arg.outHandle "usage: ",ssr[$[(::) ~ x;"q ",string[.z.f]," %cmd%";x];"%cmd%";1 _ output[0]]; / There will be one extra line of padding at the front of the command line string
+    if[count output 1;arg.outHandle ` sv output 1;];
+    arg.exit 1; / Explicitly name exit function to allow test override
+    ];
+  }
+
+arg.exit:{exit x}
+
+arg.optMessage:{[flags;typ;handler];
+  cmdLine: " [ ",first[arg.filterFlags flags],$[-11h ~ type first handler;
+    " ",string first handler;
+    10h ~ type typ;
+    " \"",arg.typeDict[first typ]," ...\"";
+    -1h ~ type typ;
+    "";
+    " ",arg.typeDict[first typ]
+    ]," ]";
+  explainLine: ("," sv arg.filterFlags[flags]),"     ",$[-11h ~ type first handler;string[first handler]," - ";""],arg.typeDict first typ;
+  (cmdLine;enlist "\t",explainLine)
+  }
+
+arg.optDefMessage:{[flags;typ;default;handler];
+  defText:":(",$[10h ~ type default;"\"",default,"\"";string default],")";
+  cmdLine: " [ ",first[arg.filterFlags flags]," ",$[-11h ~ type first handler;
+    string first handler;
+    10h ~ type typ;
+    "\"",arg.typeDict[first typ]," ...\"";
+    arg.typeDict[first typ]
+    ],defText," ]";
+  explainLine: ("," sv arg.filterFlags[flags]),"     ",$[-11h ~ type first handler;string[first handler]," - ";""],arg.typeDict first typ, defText;
+  (cmdLine;enlist "\t",explainLine)
+  }
+
+arg.argMessage:{[typ;default;num;handler];
+  defText:$[10h ~ type default;":(\"",default,"\")";(::) ~ default;"";":(",string[default],")"];
+  cmdLine: " ", " " sv first[num]#enlist $[-11h ~ type first handler;
+    string first handler;
+    arg.typeDict[first typ];
+    ],defText;
+  cmdLine,$[0h < type num;"...";""]
+  }
+
+arg.handleUnrecognized:{[messageGiven];
+  msg:"Unrecognized options: \n\t", "\n\t" sv arg.args where arg.args like "-*";
+  if[any arg.args like "-*";
+    'msg
     ];
   }
 
