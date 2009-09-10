@@ -1,3 +1,6 @@
+VERSION 2.0.1 -- 2009.09.10
+* Added support for optional positional arguments (enlist 0) eg start a command with a list of directories or leave it empty and begin processing the current directory
+
 VERSION 2.0 -- 2009.09.09
 * Significantly enhanced functionality of option parser.  Breaks backwards compatibility
 ** New .utl.addDefOpt allows a default value to be specified for an option
