@@ -65,7 +65,7 @@ arg.processArg:{[typ;default;num;handler];
     first[num]#arg.args
     ];
   if[count[default] < first num;default:first[num]#default;];
-  $[0h < type num;
+  $[(0 <> first num) and 0h < type num;
     arg.setReg["";handler;0b;val,count[val] _ default];
     arg.setReg["";handler;0b;$[1 ~ num;first;::] $[0 = count val;default;val]]
     ];
@@ -179,11 +179,11 @@ arg.optDefMessage:{[flags;typ;default;handler];
 
 arg.argMessage:{[typ;default;num;handler];
   defText:$[10h ~ type default;":(\"",default,"\")";(::) ~ default;"";":(",string[default],")"];
-  cmdLine: " ", " " sv first[num]#enlist $[-11h ~ type first handler;
+  cmdLine: " ", " " sv first[max (num;1)]#enlist $[-11h ~ type first handler;
     string first handler;
     arg.typeDict[first typ];
     ],defText;
-  cmdLine,$[0h < type num;"...";""]
+  {[num;cmdLine] $[first[num] ~ 0;" [",cmdLine," ]";cmdLine]}[num] cmdLine,$[0h < type num;"...";""]
   }
 
 arg.handleUnrecognized:{[messageGiven];

@@ -177,6 +177,17 @@
     a mustmatch 10 20;
     .utl.arg.args mustmatch ();
     };
+  should["process all remaining arguments properly when the number of arguments to be handled is zero or more"]{
+    .utl.arg.args:("10";"20");
+    .utl.addArg["I";10;0,();`a];
+    .utl.parseArgs[];
+    a mustmatch 10 20;
+    `.utl.arg.posArgs mock ();
+    .utl.arg.args:enlist ("10");
+    .utl.addArg["I";10;0,();`a];
+    .utl.parseArgs[];
+    a mustmatch enlist 10;
+    };
   should["treat arguments taking exactly 1 value as atoms and all others as lists"]{
     `b mock `;
     .utl.arg.args:("10";"20");
