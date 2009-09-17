@@ -39,7 +39,7 @@ configParsing.substituteLine:{[d;l];
   }
 
 parseRawConfig:{[file];
-  l:$[-11h ~ type file;[fn:file;read0 file];[fn:"input string";file]];
+  l:$[-11h ~ type file;[fn:1 _ string file;read0 file];[fn:"input string";file]];
   l:configParsing.stripEmptyLines configParsing.stripComments l;
   configParsing.pairs[fn] each configParsing.sections[fn] l
   }

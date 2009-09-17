@@ -32,8 +32,11 @@
     cfg["foo";"baz"] musteq string 3;
     cfg["bar";"qux"] musteq string 5;
     };
-  should["raise an error if there is not one section"]{
-    mustthrow[();{.utl.parseRawConfig configFile `noSections}];
+  should["raise an error if there is not at least one section"]{
+    configFileName: 1 _ string configFile `noSections;
+    mustthrow["There were no sections found in the file: '",configFileName,"'"]{
+      .utl.parseRawConfig configFile `noSections
+      };
     };
   should["recognize colon as a name-value pair separator"]{
     mustnotthrow[();{.utl.parseRawConfig configFile `colonSeparators}];
@@ -48,7 +51,10 @@
     cfg["foo";"baz"] musteq string 3;
     };
   should["raise an error if there is an empty key"]{
-    mustthrow[();{.utl.parseRawConfig configFile `emptyKey}];
+    configFileName: 1 _ string configFile `emptyKey;
+    mustthrow["There was an empty key in the file: '",configFileName,"'"]{
+      .utl.parseRawConfig configFile `emptyKey
+      };
     };
   should["handle RFC 822 style LONG HEADER FIELD continuations"]{
     cfg: .utl.parseRawConfig configFile `longHeader;
