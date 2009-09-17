@@ -1,3 +1,7 @@
+VERSION 2.0.2 -- 2009.09.17
+* Fixed bug where wrong error was being thrown when processing improperly formatted option files
+* Fixed bug where leading and trailing tab spaces would appear in option keys
+
 VERSION 2.0.1 -- 2009.09.10
 * Added support for optional positional arguments (enlist 0) eg start a command with a list of directories or leave it empty and begin processing the current directory
 
