@@ -65,6 +65,10 @@
     cfg["foo";"bar"] mustmatch string 1;
     cfg["foo";"baz"] mustmatch string 2;
     };
+  should["trim whitespace from keys"]{
+    cfg: .utl.parseRawConfig configFile `tabsInKeys;
+    key[cfg["first section"]] mustin\: ("foo";"blah";"baz";"hah");
+    };
   should["ignore lines beginning with sharp"]{
     mustnotthrow[();{.utl.parseRawConfig configFile `sharpComment}];
     };

@@ -2,7 +2,11 @@
 configParsing:((),`)!enlist (::)
 
 configParsing.stripComments:{[l];l where not any l like/: (";*";"#*")}
-configParsing.stripEmptyLines:{[l];l where not "" ~/: trim l}
+configParsing.stripEmptyLines:{[l];l where not "" ~/: configParsing.trim[" \t"] l}
+/ Regular trim functions only handle spaces
+configParsing.ltrim:{$[not type y;.z.s[x] each y;any x = first y;(sum scan[and] over[or] x=\:y)_ y;y]}
+configParsing.rtrim:{$[not type y;.z.s[x] each y;any x = last y;reverse configParsing.ltrim[x] reverse y;y]}
+configParsing.trim:{configParsing.ltrim[x] configParsing.rtrim[x] y}
 
 configParsing.sections:{[fn;l];
   cl:count l;
@@ -20,8 +24,8 @@ configParsing.pairs:{[fn;l];
   l:raze each n cut l;
   nPos: {min raze x ss/: "=:"} each l;
   d:flip (0,'nPos) cut' l;
-  d[0]: trim each d[0];
-  d[1]: ({(sum (and) scan "\t"=x) _ x} ltrim 1 _) each d[1];
+  d[0]: configParsing.trim[" \t"] each d[0];
+  d[1]: (configParsing.ltrim[" \t"] 1 _) each d[1];
   d:(!) . d;
   if[any "" ~/: key d;'"There was an empty key in the file: '",fn,"'";];
   dk!reverse[d] dk:distinct key d
