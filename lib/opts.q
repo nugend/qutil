@@ -150,7 +150,7 @@ parseArgs:{
     ];
   }
 
-arg.exit:{exit x}
+arg.exit:{if[not .utl.DEBUG;exit x];}
 
 arg.optMessage:{[flags;typ;handler];
   cmdLine: " [ ",first[arg.filterFlags flags],$[-11h ~ type first handler;

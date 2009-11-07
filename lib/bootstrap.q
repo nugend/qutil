@@ -2,6 +2,7 @@
 .utl.PKGSLOADED:enlist[""]!enlist[`:]
 .utl.FILELOADING:`
 .utl.PKGLOADING:""
+.utl.DEBUG:0b
 
 .utl.baseLoadV:{[x;v;allowReload];
   pkgInfo: .utl.requireVH.getPackageInfo[x;v;allowReload];
