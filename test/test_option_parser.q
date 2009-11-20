@@ -187,6 +187,21 @@
     .utl.addArg["I";10;0,();`a];
     .utl.parseArgs[];
     a mustmatch enlist 10;
+    `a mock 0;
+    `.utl.arg.posArgs mock ();
+    .utl.arg.args:enlist ("10");
+    .utl.addArg["I";0;0;`a];
+    .utl.parseArgs[];
+    a mustmatch 10;
+    `b mock 0;
+    `a mock 0;
+    `.utl.arg.posArgs mock ();
+    .utl.arg.args:("10";"20");
+    .utl.addArg["I";0;0;`a];
+    .utl.addArg["I";0;0;`b];
+    .utl.parseArgs[];
+    a mustmatch 10;
+    b mustmatch 20;
     };
   should["treat arguments taking exactly 1 value as atoms and all others as lists"]{
     `b mock `;

@@ -1,3 +1,9 @@
+* Made option parser capable of handling single value optional positional arguments (only one value is processed instead of whole list)
+
+VERSION 2.0.3 -- 2009.11.06
+* Added a boolean DEBUG flag
+* Made option parser disregard option errors if DEBUG flag is true
+
 VERSION 2.0.2 -- 2009.09.17
 * Fixed bug where wrong error was being thrown when processing improperly formatted option files
 * Fixed bug where leading and trailing tab spaces would appear in option keys

@@ -62,7 +62,7 @@ arg.processArg:{[typ;default;num;handler];
     count[arg.args]#arg.args;
     0h < type num; / If num is a list (eg (),3), we consume all remaining values
     arg.args;
-    first[num]#arg.args
+    first[$[num~0;num:1;num]]#arg.args / If a zero is used as the num, it's treated as a single optional argument
     ];
   if[count[default] < first num;default:first[num]#default;];
   $[(0 <> first num) and 0h < type num;
