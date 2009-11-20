@@ -147,6 +147,20 @@
     mustnotthrow[();{.utl.parseArgs[];}];
     a mustmatch 3;
     };
+  should["accept default values that are lists"]{
+    .utl.arg.args:();
+    `.utl.arg.exit mock {'"error"};
+    `b mock ();
+    .utl.addArg["I";2 3;2;`a];
+    .utl.addOptDef["foo";(),"I";1 2;`b];
+    mustnotthrow[();{.utl.parseArgs[];}];
+    a mustmatch 2 3;
+    b mustmatch 1 2;
+    `.utl.arg.posArgs mock ();
+    .utl.arg.args: enlist "--help"; / Force output to print, which seemed to be causing an error
+    `.utl.arg.outHandle mock {10h mustmatch type x};
+    mustthrow["error";{.utl.parseArgs[];}];
+    };
   should["raise an error if a positional argument is absent and there is no default"]{
     .utl.arg.args:("10";"20");
     `.utl.arg.exit mock {'"error"};

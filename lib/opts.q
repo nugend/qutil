@@ -166,7 +166,7 @@ arg.optMessage:{[flags;typ;handler];
   }
 
 arg.optDefMessage:{[flags;typ;default;handler];
-  defText:":(",$[10h ~ type default;"\"",default,"\"";string default],")";
+  defText:":(",$[10h ~ type default;"\"",default,"\"";" " sv string (),default],")";
   cmdLine: " [ ",first[arg.filterFlags flags]," ",$[-11h ~ type first handler;
     string first handler;
     10h ~ type typ;
@@ -178,7 +178,7 @@ arg.optDefMessage:{[flags;typ;default;handler];
   }
 
 arg.argMessage:{[typ;default;num;handler];
-  defText:$[10h ~ type default;":(\"",default,"\")";(::) ~ default;"";":(",string[default],")"];
+  defText:$[10h ~ type default;":(\"",default,"\")";() ~ default;"";":(",(" " sv string (),default),")"];
   cmdLine: " ", " " sv first[max (num;1)]#enlist $[-11h ~ type first handler;
     string first handler;
     arg.typeDict[first typ];
