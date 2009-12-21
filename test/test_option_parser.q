@@ -191,7 +191,7 @@
     a mustmatch 10 20;
     .utl.arg.args mustmatch ();
     };
-  should["process all remaining arguments properly when the number of arguments to be handled is zero or more"]{
+  should["process all remaining arguments properly when the number of arguments to be handled is zero or the remaining arguments"]{
     .utl.arg.args:("10";"20");
     .utl.addArg["I";10;0,();`a];
     .utl.parseArgs[];
@@ -216,6 +216,37 @@
     .utl.parseArgs[];
     a mustmatch 10;
     b mustmatch 20;
+    };
+  should["use the default argument value when no positional arguments are present and the number of arguments to be handled is zero or one"]{
+    .utl.arg.args:();
+    .utl.addArg["S";`foo;0;`a];
+    .utl.parseArgs[];
+    a mustmatch `foo;
+    `.utl.arg.posArgs mock ();
+    .utl.arg.args:enlist "baz";
+    .utl.addArg["S";`foo;0;`a];
+    .utl.parseArgs[];
+    a mustmatch `baz;
+    `.utl.arg.posArgs mock ();
+    `b mock ();
+    .utl.arg.args:("--help";"21";"baz");
+    .utl.addArg["S";`foo;0;`a];
+    .utl.addOptDef["help";"I";10;`b];
+    .utl.parseArgs[];
+    a mustmatch `baz;
+    b mustmatch 21;
+    `.utl.arg.posArgs mock ();
+    `.utl.arg.regDefOpts mock ();
+    `b mock ();
+    `c mock ();
+    .utl.arg.args:("baz";"--help";"21";"bat";"boo");
+    .utl.addArg["S";`foo;0;`a];
+    .utl.addOptDef["help";"I";10;`b];
+    .utl.addArg["S";`bat`blah;0,();`c];
+    .utl.parseArgs[];
+    a mustmatch `baz;
+    b mustmatch 21;
+    c mustmatch `bat`boo;
     };
   should["treat arguments taking exactly 1 value as atoms and all others as lists"]{
     `b mock `;

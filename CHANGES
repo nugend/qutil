@@ -1,3 +1,4 @@
+* Fixed bug where single value optional positional arguments would not be parsed properly
 * Fixed bug with Windows path separators in q.q code
 * Lists can be specified as default values
 * Made option parser capable of handling single value optional positional arguments (only one value is processed instead of whole list)
