@@ -1,4 +1,5 @@
 .utl.LOADED:()
+.utl.LOADING:`symbol$()
 .utl.PKGSLOADED:enlist[""]!enlist[`:]
 .utl.FILELOADING:`
 .utl.PKGLOADING:""
@@ -16,9 +17,12 @@
   `.utl.FILELOADING set .utl.realPath file;
   result:1b;
   / The require function prevents files from being loaded that have already been loaded
-  if[allowReload or not file in .utl.LOADED;
+  / Files should NEVER be loaded recursively
+  if[(allowReload or not file in .utl.LOADED) and not file in .utl.LOADING;
+    .[`.utl.LOADING;();union;file];
     / NOTE:Consider supporting a debug flag to allow errors on require go uncaught
     result:@[{system "l ", x;1b};1 _ string file;(::)];  / The file is loaded and errors are caught
+    .[`.utl.LOADING;();except;file];
     if[1b ~ result;.[`.utl.LOADED;();union;file]];
     ];
   `.utl.FILELOADING set oldFileLoading;

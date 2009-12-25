@@ -33,6 +33,11 @@
   should["be able to load nested packages from file handles"]{
     mustnotthrow[();{.utl.require x}[.tst.testFilePath `testLoaderFiles`nested]];
     };
+  should["avoid circular dependency issues"]{
+    oldLoading:.utl.LOADING;
+    mustnotthrow[();(.utl.require;"recursive")];
+    .utl.LOADING mustmatch oldLoading;
+    };
   should["be able to load non-conflicting packages successively"]{
     .utl.requireV["vpkg";"<1.2"];
     mustnotthrow[();{.utl.require "vpkg"}];

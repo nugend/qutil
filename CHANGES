@@ -1,3 +1,5 @@
+* Fixed bug where files could load recursively
+
 VERSION 2.0.4 -- 2009.12.20
 * Fixed bug where single value optional positional arguments would not be parsed properly
 * Fixed bug with Windows path separators in q.q code
