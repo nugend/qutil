@@ -181,7 +181,7 @@ arg.argMessage:{[typ;default;num;handler];
   defText:$[10h ~ type default;":(\"",default,"\")";() ~ default;"";":(",(" " sv string (),default),")"];
   cmdLine: " ", " " sv first[max (num;1)]#enlist $[-11h ~ type first handler;
     string first handler;
-    arg.typeDict[first typ];
+    arg.typeDict[first typ]
     ],defText;
   {[num;cmdLine] $[first[num] ~ 0;" [",cmdLine," ]";cmdLine]}[num] cmdLine,$[0h < type num;"...";""]
   }
