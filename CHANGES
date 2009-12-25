@@ -1,5 +1,6 @@
 VERSION 2.0.5 -- 2009.12.24
 * Fixed bug where files could load recursively
+* Fixed typo that caused some argument parser patterns to fail
 
 VERSION 2.0.4 -- 2009.12.20
 * Fixed bug where single value optional positional arguments would not be parsed properly
