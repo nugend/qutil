@@ -1,3 +1,4 @@
+VERSION 2.0.5 -- 2009.12.24
 * Fixed bug where files could load recursively
 
 VERSION 2.0.4 -- 2009.12.20
