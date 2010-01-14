@@ -1,3 +1,4 @@
+VERSION 3.0.0 -- 2010.01.13
 * NONCOMPATIBLE - Simplified how optional positional arguments are specified.
 ** It is no longer possible to use an empty list to specify that arguments are optional, only an argument number of 0 suggests an optional argument
 
