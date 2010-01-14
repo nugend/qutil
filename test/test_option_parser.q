@@ -9,8 +9,8 @@
     `.utl.arg.regDefOpts mock ();
     `.utl.arg.posArgs mock ();
     `.utl.arg.args mock ("10";"--foo";"10";"--baz";"trade";"--hello";"20";"--bar=20090620";"--bat";"10 20 30";"--qux";"f o o");
-    `.utl.arg.handleUnrecognizedBackup mock .utl.arg.handleUnrecognized; / Need to turn this off for partial option testing
-    `.utl.arg.handleUnrecognized mock {};
+    `.utl.arg.handleUnrecognized mock {}; / Need to turn this off for partial option testing
+    `.utl.arg.handleUnrecognizedBackup mock .utl.arg.handleUnrecognized; 
     };
   should["support option/value pairs separated by spaces"]{
     .utl.addOpt["foo";"I";`a];
@@ -139,11 +139,8 @@
     };
   should["use the default value provided when a positional argument is absent"]{
     .utl.arg.args:("10";"20");
-    `.utl.arg.exit mock {'"error"};
-    .utl.addArg["I";();2;`a];
-    mustnotthrow[();{.utl.parseArgs[];}];
-    .utl.arg.posArgs:();
-    .utl.addArg["I";3;1;`a];
+    .utl.addArg["I";1;2;`a];
+    .utl.addArg["I";3;0;`a];
     mustnotthrow[();{.utl.parseArgs[];}];
     a mustmatch 3;
     };
@@ -151,7 +148,7 @@
     .utl.arg.args:();
     `.utl.arg.exit mock {'"error"};
     `b mock ();
-    .utl.addArg["I";2 3;2;`a];
+    .utl.addArg["I";2 3;0;`a];
     .utl.addOptDef["foo";(),"I";1 2;`b];
     mustnotthrow[();{.utl.parseArgs[];}];
     a mustmatch 2 3;

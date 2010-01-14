@@ -56,17 +56,14 @@ arg.processBool:{[flags;typ;handler];
   }
 
 arg.processArg:{[typ;default;num;handler];
-  val:typ$$[(() ~ default) and count[arg.args] < first num;
+  val:typ$$[count[arg.args] < first num;
     '"Insufficient arguments";
-    count[arg.args] < first num;
-    count[arg.args]#arg.args;
     0h < type num; / If num is a list (eg (),3), we consume all remaining values
     arg.args;
     first[$[(num~0) and count arg.args;num:1;num]]#arg.args / If a zero is used as the num, it's treated as a single optional argument (just don't wanna do 1#()
     ];
-  if[count[default] < first num;default:first[num]#default;];
   $[(0 <> first num) and 0h < type num;
-    arg.setReg["";handler;0b;val,count[val] _ default];
+    arg.setReg["";handler;0b;val];
     arg.setReg["";handler;0b;$[1 ~ num;first;::] $[0 = count val;default;val]]
     ];
   arg.dropAll[`.utl.arg.args;til count val];

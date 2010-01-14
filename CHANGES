@@ -1,3 +1,6 @@
+* NONCOMPATIBLE - Simplified how optional positional arguments are specified.
+** It is no longer possible to use an empty list to specify that arguments are optional, only an argument number of 0 suggests an optional argument
+
 VERSION 2.0.5 -- 2009.12.24
 * Fixed bug where files could load recursively
 
