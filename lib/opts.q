@@ -51,7 +51,7 @@ arg.processDefReg:{[flags;typ;default;handler];
 
 arg.processBool:{[flags;typ;handler];
   / Get all candidate options from the arguments
-  val:arg.filterVals arg.getBoolOpt each arg.filterFlags flags;
+  val:any arg.getBoolOpt each arg.filterFlags flags;
   if[count val;arg.setBool[typ;handler;val];];
   }
 

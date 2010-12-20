@@ -45,6 +45,15 @@
     .utl.parseArgs[];
     a mustin (10;20090620);
     };
+  should["let multiple boolean options be parsed by the same parser"]{
+    .utl.addOpt["notopt,baz";1b;`a];
+    .utl.parseArgs[];
+    must[a;"Expected a to be true"];
+    `a mock 0b;
+    .utl.addOpt["foo,baz";1b;`a];
+    .utl.parseArgs[];
+    must[a;"Expected a to be true"];
+    };
   should["interpret options with a type of a single character as a single value cast to that type"]{
     .utl.addOpt["foo";"I";`a];
     .utl.parseArgs[];
