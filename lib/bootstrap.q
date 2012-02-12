@@ -73,9 +73,9 @@
 
 .utl.requireVH.packagesLoaded:{[package;v;allowReload];
   / If the the thing attempting to be loaded isn't a pure package, we're not going to try restricing it based on package id
-  if[("" ~ v) and package like "*-*";
-    l: "-" vs raze string package;
-    v: "=",last l;
+  if[("" ~ v) and (package like "*-*") and package like "*[.0-9]";
+    l: {$[1 < count x;("-" sv -1 _ x;-1#x);x]} "-" vs raze string package;
+    v: raze "=",last l;
     package: first l];
   if[not package in key .utl.PKGSLOADED;:`];
   $[.utl.requireVH.makeFilter[v] file:.utl.PKGSLOADED package;
@@ -103,7 +103,8 @@
     '"A matching package was not found for '",x,"' with version string '",v,"'.  Paths searched:\n\t", "\n\t" sv string .utl.QPATH];
   rval:.utl.requireVH.foundDict[path;pathComponents];
   / Keep track of loaded packages to prevent mismatching requires
-  .utl.PKGSLOADED,:enlist[first "-" vs packageName]!enlist[path];
+  .utl.PKGSLOADED,:enlist["-" sv {$[(last[x] like "*[.0-9]") and 1 < count x;-1 _ x;x]} "-" vs packageName]!enlist[path];
+  //.utl.PKGSLOADED,:enlist[first "-" vs packageName]!enlist[path];
   rval
   }
 
@@ -144,7 +145,7 @@
   }
 
 / Get a Version Number String from the last element of a path
-.utl.requireVH.VNStrPath:{`char$raze 1 _ "-" vs string last ` vs x}
+.utl.requireVH.VNStrPath:{`char$raze last "-" vs string last ` vs x}
 
 / Create a pair of operator and Version Number String
 .utl.requireVH.parseVStr:{

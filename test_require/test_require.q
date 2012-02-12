@@ -39,13 +39,13 @@
     .utl.LOADING mustmatch oldLoading;
     };
   should["be able to load non-conflicting packages successively"]{
-    .utl.requireV["vpkg";"<1.2"];
-    mustnotthrow[();{.utl.require "vpkg"}];
-    mustnotthrow[();{.utl.requireV["vpkg";">0.1"]}];
+    .utl.requireV["v-pkg";"<1.2"];
+    mustnotthrow[();{.utl.require "v-pkg"}];
+    mustnotthrow[();{.utl.requireV["v-pkg";">0.1"]}];
     };
   should["throw an error when attmepting to load a conflicting package"]{
-    .utl.requireV["vpkg";">1.2"];
-    mustthrow[();{.utl.requireV["vpkg";"<1.2"]}];
+    .utl.requireV["v-pkg";">1.2"];
+    mustthrow[();{.utl.requireV["v-pkg";"<1.2"]}];
     };
   };
 
@@ -57,31 +57,31 @@
     `.utl.PKGSLOADED mock .utl.PKGSLOADED;
     };
   should["choose an exact package name match if the version string argument is empty"]{
-    .utl.require "vpkg";
+    .utl.require "v-pkg";
     version mustmatch "trunk";
     .utl.LOADED:();
     .utl.PKGSLOADED:enlist[""]!enlist[`:];
-    .utl.require "vpkg-0.1.2";
+    .utl.require "v-pkg-0.1.2";
     version mustmatch "0.1.2";
     .utl.LOADED:();
     .utl.PKGSLOADED:enlist[""]!enlist[`:];
-    .utl.require "vpkg-1.2.1";
+    .utl.require "v-pkg-1.2.1";
     version mustmatch "1.2.1";
     };
   should["choose the most recent matching version of a package if a version string has been supplied"]{
-    .utl.requireV["vpkg";"<1.2"];
+    .utl.requireV["v-pkg";"<1.2"];
     version mustmatch "0.1.2";
     .utl.LOADED:();
     .utl.PKGSLOADED:enlist[""]!enlist[`:];
-    .utl.requireV["vpkg";"<2.2"];
+    .utl.requireV["v-pkg";"<2.2"];
     version mustmatch "1.2.1";
     .utl.LOADED:();
     .utl.PKGSLOADED:enlist[""]!enlist[`:];
-    .utl.requireV["vpkg";">0.5"];
+    .utl.requireV["v-pkg";">0.5"];
     version mustmatch "1.2.1";
     };
   should["fallback to an exact package name match if there is no matching version"]{
-    .utl.requireV["vpkg";">3.5"];
+    .utl.requireV["v-pkg";">3.5"];
     version mustmatch "trunk";
     };
   };
