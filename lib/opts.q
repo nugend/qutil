@@ -150,7 +150,7 @@ parseArgs:{
 arg.exit:{if[not .utl.DEBUG;exit x];}
 
 arg.optMessage:{[flags;typ;handler];
-  cmdLine: " [ ",first[arg.filterFlags flags],$[-11h ~ type first handler;
+  cmdLine: " [ ",(" | " sv arg.filterFlags flags),$[-11h ~ type first handler;
     " ",string first handler;
     10h ~ type typ;
     " \"",arg.typeDict[first typ]," ...\"";
