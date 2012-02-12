@@ -70,7 +70,7 @@ arg.processArg:{[typ;default;num;handler];
   }
 
 arg.filterFlags:{"--" ,/: "," vs (),x}
-arg.filterVals:{first x where not () ~/: x}
+arg.filterVals:{$[1h ~ type x;any x;first x where not () ~/: x]}
 
 arg.getRegOpt:{
   l:where arg.args like x,"*";
