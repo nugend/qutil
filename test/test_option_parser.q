@@ -8,7 +8,7 @@
     `.utl.arg.regOpts mock ();
     `.utl.arg.regDefOpts mock ();
     `.utl.arg.posArgs mock ();
-    `.utl.arg.args mock ("10";"--foo";"10";"--baz";"trade";"--hello";"20";"--bar=20090620";"--bat";"10 20 30";"--qux";"f o o";"--bat-bar";"--bat-boo");
+    `.utl.arg.args mock ("10";"--foo";"10";"--baz";"trade";"--hello";"20";"--bar=20090620";"--bat";"10 20 30";"--qux";"f o o";"--bat-bar";"--bat-boo";"--baz-bar";"10";"--baz-bat";"11");
     `.utl.arg.handleUnrecognized mock {}; / Need to turn this off for partial option testing
     `.utl.arg.handleUnrecognizedBackup mock .utl.arg.handleUnrecognized; 
     };
@@ -29,6 +29,16 @@
     .utl.parseArgs[];
     a mustmatch 1b;
     b mustmatch 1b;
+    };
+  should["support regular options with a dash in the option name"]{
+    `b`c mock' `;
+    .utl.addOpt["bbo,baz-bar";"I";`a];
+    .utl.addOptDef["bba,baz-bat";"I";12;`b];
+    .utl.addOptDef["bbc,baz-bac";"I";12;`c];
+    .utl.parseArgs[];
+    a mustmatch 10;
+    b mustmatch 11;
+    c mustmatch 12;
     };
   should["let multiple options be parsed by the same parser"]{
     .utl.addOpt["foo,bar";"I";`a];
