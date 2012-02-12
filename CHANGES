@@ -1,3 +1,9 @@
+VERSION 3.0.1 -- 2012.02.11
+* Fixed a number of long standing bugs:
+** Dashes in command line parameters aren't parsing correctly (https://github.com/DannoHung/qutil/issues/5)
+** Binary Option Flag is not working with multiple flag values (https://github.com/DannoHung/qutil/issues/2)
+** Bug with libraries containing dashes in the name (https://github.com/DannoHung/qutil/issues/1)
+
 VERSION 3.0.0 -- 2010.01.13
 * NONCOMPATIBLE - Simplified how optional positional arguments are specified.
 ** It is no longer possible to use an empty list to specify that arguments are optional, only an argument number of 0 suggests an optional argument
