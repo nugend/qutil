@@ -36,9 +36,12 @@ configParsing.substituteLine:{[d;l];
   pred:(p[0] < p[1]) and 2 = count p: first flip l ss/: ("%(";")s");
   if[() ~ pred;:l]; / If there are no substitution characters, p is an empty list and the normal predicate doesn't work right
   $[pred;
-    [pieces:(0,p) cut l;
-      if[not (2 _ pieces 1) in key d;:l];                       / Abort early if there are missing substitutions
-      .z.s[d;pieces[0],d[2 _ pieces 1],2 _ pieces 2]]; / sv because the value might be a list
+    $[(lookup:2 _ (pieces:(0,p) cut l) 1) in key d;
+      .z.s[d;pieces[0],d[lookup],2 _ pieces 2];
+      not "" ~ e:getenv `$lookup;
+      .z.s[d;pieces[0],e,2 _ pieces 2];
+      l
+      ];
     l / The substitution strings were in the wrong order or there was only one and there was no substitution to perform
     ]
   }

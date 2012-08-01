@@ -6,3 +6,4 @@ bak:orange
 bat:%(baz)s
 baz:apple
 qux:%(bak)s
+envVal:%(TEST_ENV)s

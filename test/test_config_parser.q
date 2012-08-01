@@ -8,6 +8,11 @@
     cfg["first";"bat"] mustmatch "banana";
     cfg["first";"qux"] mustmatch "orange";
     };
+  should["attempt to lookup values from the environment if no substituion is available in the config file"]{
+    setenv[`TEST_ENV;"Hello"];
+    cfg: .utl.parseConfig configFile `nameSubstitution;
+    cfg["first";"envVal"] mustmatch "Hello";
+    };
   should["fill missing values from a DEFAULT section if available"]{
     cfg: .utl.parseConfig configFile `default;
     cfg["foo";"baz"] mustmatch string 4;
