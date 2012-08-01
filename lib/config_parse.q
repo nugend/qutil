@@ -17,6 +17,7 @@ configParsing.sections:{[fn;l];
   }
   
 configParsing.pairs:{[fn;l];
+  if[not count l;:()!()];
   n:where any l like\:/: ("*:*";"*=*");
   if[not 0 in n;'"There was an improperly formatted line in the file: '",fn,"'"];
   badLines: where not (l (til count l) except n) like "[ \t]*";

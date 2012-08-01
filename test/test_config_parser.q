@@ -60,6 +60,10 @@
     cfg: .utl.parseRawConfig configFile `longHeader;
     cfg["foo";"bar"] mustmatch "1 2 3\t4";
     };
+  should["handle empty sections"]{
+    cfg:.utl.parseRawConfig configFile `emptySection;
+    cfg["dev"] mustmatch ()!();
+    };
   should["remove leading whitespace from values"]{
     cfg: .utl.parseRawConfig configFile `leadingWhitespace;
     cfg["foo";"bar"] mustmatch string 1;

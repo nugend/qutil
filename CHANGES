@@ -1,3 +1,6 @@
+VERSION 3.0.2 -- 2012.08.01
+* Fix to config file parsing that caused a parse error when loading empty sections
+
 VERSION 3.0.1 -- 2012.02.11
 * Fixed a number of long standing bugs:
 ** Dashes in command line parameters aren't parsing correctly (https://github.com/DannoHung/qutil/issues/5)
