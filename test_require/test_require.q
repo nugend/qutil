@@ -27,6 +27,9 @@
   should["be able to accept a package name to be loaded"]{
     mustnotthrow[();{.utl.require "package"}];
     };
+  should["not accidentally load a package with a different prefix"]{
+    mustnotthrow[();{.utl.require "package"}];
+    };
   should["be able to load nested packages from package strings"]{
     mustnotthrow[();{.utl.require "nested"}];
     };

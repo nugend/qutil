@@ -1,3 +1,6 @@
+VERSION 3.1.1 -- 2012.08.02
+* Fix for loading the wrong package with a prefix
+
 VERSION 3.1.0 -- 2012.08.01
 * Added environment variable lookup
 * Fix to config file parsing that caused a parse error when loading empty sections

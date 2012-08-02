@@ -93,12 +93,17 @@
   if[not null path:.utl.requireVH.packagesLoaded[packageName;v;allowReload];
     :.utl.requireVH.foundDict[path;pathComponents]
     ];
-  matchingPackage:.utl.requireVH.getMatchingPackage[allPackages:.utl.requireVH.allPackages[];packageName;v];
-  exactPackage: first allPackages where allPackages like "*",packageName;
+  matchingPackages:.utl.requireVH.getMatchingPackages[allPackages:.utl.requireVH.allPackages[];packageName;v];
+  allMatchingPackages:.utl.requireVH.getMatchingPackages[allPackages:.utl.requireVH.allPackages[];packageName;""];
+  highestMatch:.utl.requireVH.highestPackage matchingPackages;
+  exactPackage: $[count matchingPackages;
+    first matchingPackages where matchingPackages like "*",packageName;
+    first allMatchingPackages where allMatchingPackages like "*",packageName
+    ];
   / If a Version String has been provided (not "") we want to use the most recent matching
   / package and *then* fall back to an exact package name match.
   path: $[(v ~ "") and not null exactPackage;exactPackage;
-    not null matchingPackage;matchingPackage;
+    not null highestMatch;highestMatch;
     not null exactPackage;exactPackage;
     '"A matching package was not found for '",x,"' with version string '",v,"'.  Paths searched:\n\t", "\n\t" sv string .utl.QPATH];
   rval:.utl.requireVH.foundDict[path;pathComponents];
@@ -108,10 +113,12 @@
   rval
   }
 
-.utl.requireVH.getMatchingPackage:{[allPackages;packageName;v];
-  matchingPackages: allPackages where ('[last;vs[`]] each allPackages) like "*",packageName,"*"; / Only consider the last part of the available paths as package names
-  matchingPackages: matchingPackages where .utl.requireVH.makeFilter[v]  each matchingPackages;
-  / Use the highest available package meeting the requirements
+.utl.requireVH.getMatchingPackages:{[allPackages;packageName;v];
+  matchingPackages: allPackages where ('[last;vs[`]] each allPackages) like packageName,"*"; / Only consider the last part of the available paths as package names
+  matchingPackages where .utl.requireVH.makeFilter[v]  each matchingPackages
+  }
+
+.utl.requireVH.highestPackage:{[matchingPackages];
   first matchingPackages idesc (),.utl.requireVH.numVNStr .utl.requireVH.VNStrPath each matchingPackages
   }
 
