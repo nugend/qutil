@@ -43,7 +43,7 @@ qutil library will also be exposed to the .utl.require and
 == TUTORIAL ==
 
 Please see the project wiki on github for instructions on usage:
-http://github.com/DannoHung/qutil/wiki
+http://github.com/nugend/qutil/wiki
 
 == LICENSE ==
 
@@ -67,4 +67,4 @@ and the qspec runner tries to inadvertently load these files.
 
 Daniel Nugent 
 nugend@gmail.com
-http://github.com/DannoHung/qutil
+http://github.com/nugend/qutil
