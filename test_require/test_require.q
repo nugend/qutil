@@ -3,6 +3,7 @@
     `.utl.QPATH mock .tst.testFilePath `testLoaderFiles;
     `.utl.LOADED mock .utl.LOADED;
     `.utl.PKGSLOADED mock .utl.PKGSLOADED;
+    `.utl.PKGSTRUCTURE mock `;
     };
   should["search the specified path location for packages"]{
     allFiles: string key .utl.QPATH;
@@ -75,6 +76,7 @@
     `version mock "";
     `.utl.LOADED mock .utl.LOADED;
     `.utl.PKGSLOADED mock .utl.PKGSLOADED;
+    `.utl.PKGSTRUCTURE mock `;
     };
   should["choose an exact package name match if the version string argument is empty"]{
     .utl.require "v-pkg";

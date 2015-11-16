@@ -72,7 +72,7 @@
 
 .utl.requireVH.getPackageInfo:{[loadArg;v;allowReload];
   $[-11h ~ type loadArg;
-    `file`package!2#$[null .utl.LOADSTRUCTURE;loadArg;` sv loadArg,.utl.LOADSTRUCTURE];
+    `file`package!2#$[null[.utl.LOADSTRUCTURE] or loadArg like "*.q";loadArg;` sv loadArg,.utl.LOADSTRUCTURE];
     / If a generic list is passed, we treat it as a symbol and characters, using the symbol as a package name
     / This is useful to allow requires that reference relative paths
     0h ~ type loadArg;
