@@ -36,6 +36,23 @@
   should["be able to load nested packages from file handles"]{
     mustnotthrow[();{.utl.require x}[.tst.testFilePath `testLoaderFiles`nested]];
     };
+  alt{
+    before{
+      `.utl.QPATH mock .tst.testFilePath `testLoaderFiles;
+      `.utl.LOADED mock .utl.LOADED;
+      `.utl.PKGSLOADED mock .utl.PKGSLOADED;
+      `.utl.PKGSTRUCTURE mock `lib;
+      };
+    should["be able to load packages which have a substructure"]{
+      mustnotthrow[();{.utl.require "structured"}];
+      };
+    should["be able to load nested packages that have a substructure from package strings"]{
+      mustnotthrow[();{.utl.require "structured_nested"}];
+      };
+    should["be able to load nested packages that have a substructure from file handles"]{
+      mustnotthrow[();{.utl.require x}[.tst.testFilePath `testLoaderFiles`structured_nested]];
+      };
+    };
   should["avoid circular dependency issues"]{
     oldLoading:.utl.LOADING;
     mustnotthrow[();(.utl.require;"recursive")];

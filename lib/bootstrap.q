@@ -4,9 +4,15 @@
 .utl.FILELOADING:`
 .utl.PKGLOADING:""
 .utl.DEBUG:0b
+.utl.PKGSTRUCTURE:`
+.utl.LOADSTRUCTURE:`
+.utl.LOADERROR:()
 
 .utl.baseLoadV:{[x;v;allowReload];
+  oldStructure:.utl.LOADSTRUCTURE;
+  .utl.LOADSTRUCTURE:.utl.PKGSTRUCTURE;
   pkgInfo: .utl.requireVH.getPackageInfo[x;v;allowReload];
+  .utl.LOADSTRUCTURE:oldStructure;
   / The convention used for packages will be to start by using an init file
   file: $[not 11h ~ type key pkgInfo[`file];pkgInfo[`file];` sv pkgInfo[`file],`init.q];
   if[not count key file; '"File '",(1 _ string file),"' not found"];
@@ -20,20 +26,30 @@
   / Files should NEVER be loaded recursively
   if[(allowReload or not file in .utl.LOADED) and not file in .utl.LOADING;
     .[`.utl.LOADING;();union;file];
-    / NOTE:Consider supporting a debug flag to allow errors on require go uncaught
-    result:@[{system "l ", x;1b};1 _ string file;(::)];  / The file is loaded and errors are caught
+    result:.utl.requireVH.loadFile file;
     .[`.utl.LOADING;();except;file];
     if[1b ~ result;.[`.utl.LOADED;();union;file]];
     ];
+  if[not 1b ~ result;
+    .utl.LOADERROR,:file;
+    ];
   `.utl.FILELOADING set oldFileLoading;
   `.utl.PKGLOADING set oldPkgLoading;
-  $[1b ~ result;1b;'"Error loading '",(1 _ string file),"': ",result];
+  $[1b ~ result;
+    1b;
+    result like "*.utl.LOADERROR*";
+    'result;
+    '"Error while loading. Please see .utl.LOADERROR: ",result
+    ];
   }
 
 .utl.loadV:.utl.baseLoadV[;;1b]
 .utl.load:.utl.baseLoadV[;"";1b]
 .utl.requireV:.utl.baseLoadV[;;0b]
 .utl.require:.utl.baseLoadV[;"";0b]
+
+// Convenience funciton for loading files inside of pakcages
+.utl.pkg:{.utl.load $[10h ~ type .utl.PKGLOADING;.utl.PKGLOADING,"/",x;.utl.PKGLOADING,x]}
 
 /Get the real path of a filehandle cross platform (hopefully)
 .utl.realPath:{
@@ -45,13 +61,22 @@
   }
 
 .utl.requireVH:((),`)!(),(::)
+.utl.requireVH.loadFile:{[file];
+  f:1 _ string file;
+  if[0i ~ system "e";
+    :@[{system "l ", x;1b};1 _ string file;(::)];
+    ];
+  system "l ",f;
+  1b
+  }
+
 .utl.requireVH.getPackageInfo:{[loadArg;v;allowReload];
   $[-11h ~ type loadArg;
-    `file`package!(loadArg;loadArg);
+    `file`package!2#$[null .utl.LOADSTRUCTURE;loadArg;` sv loadArg,.utl.LOADSTRUCTURE];
     / If a generic list is passed, we treat it as a symbol and characters, using the symbol as a package name
     / This is useful to allow requires that reference relative paths
     0h ~ type loadArg;
-    `file`package!(` sv loadArg[0], `$"/" vs 1 _ loadArg;loadArg[0]);
+    `file`package!(` sv loadArg[0],`$"/" vs 1 _ loadArg;loadArg[0]);
     .utl.requireVH.findV[loadArg;v;allowReload]
     ]
   }
@@ -126,7 +151,7 @@
 / sub-package elements (packages and files within a versioned package) is needed
 .utl.requireVH.foundDict:{[path;pathComponents];
   subPackagePath: $[1 < count pathComponents;`$ 1 _ string ` sv `$@[1 _ pathComponents;0;":",];()];
-  file: ` sv path,subPackagePath;
+  file: ` sv path,$[null .utl.LOADSTRUCTURE;();.utl.LOADSTRUCTURE],subPackagePath;
   package: 1 _ string ` sv (hsym last ` vs path),subPackagePath;
   `file`package!(file;package)
   }

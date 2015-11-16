@@ -1,3 +1,17 @@
+* Added support for package substructure to file loading facility
+** Use by setting .utl.PKGSTRUCTURE to any symbol. Package loader will now expect your code to have the following layout (.e.g. if PKGSTRUCTURE is `lib) :
+   /path/to/QPATH:
+     pkg1:
+       config
+       binaries
+       lib:
+         init.q
+         foo.q
+** Added .utl.pkg function to simplify previous .utl.require .utl.PKGLOADING,"/foo.q" pattern
+*** From inside package being loaded, use like: .utl.pkg "foo.q"
+*** Will automatically add a trailing slash to package names as needed.
+*** Only use when you do not want to load a file directly, i.e.: .utl.load "package/blah.q"
+
 VERSION 3.1.1 -- 2012.08.02
 * Fix for loading the wrong package with a prefix
 
