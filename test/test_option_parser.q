@@ -32,9 +32,9 @@
     };
   should["support regular options with a dash in the option name"]{
     `b`c mock' `;
-    .utl.addOpt["bbo,baz-bar";"I";`a];
-    .utl.addOptDef["bba,baz-bat";"I";12;`b];
-    .utl.addOptDef["bbc,baz-bac";"I";12;`c];
+    .utl.addOpt["bbo,baz-bar";"J";`a];
+    .utl.addOptDef["bba,baz-bat";"J";12;`b];
+    .utl.addOptDef["bbc,baz-bac";"J";12;`c];
     .utl.parseArgs[];
     a mustmatch 10;
     b mustmatch 11;
@@ -157,11 +157,11 @@
   should["require the specified number of positional arguments"]{
     .utl.arg.args:("10";"20");
     `.utl.arg.exit mock {'"error"};
-    .utl.addArg["I";();2;`a];
+    .utl.addArg["J";();2;`a];
     mustnotthrow[();{.utl.parseArgs[];}];
     .utl.arg.posArgs:();
     a mustmatch 10 20;
-    .utl.addArg["I";();1;`a];
+    .utl.addArg["J";();1;`a];
     mustthrow[();{.utl.parseArgs[];}];
     };
   should["use the default value provided when a positional argument is absent"]{
@@ -196,9 +196,9 @@
     };
   should["handle positional arguments intermixed with optional arguments"]{
     `b`c`d`e mock' `;
-    .utl.addOpt["foo";"I";`a];
-    .utl.addArg["I";();1;`b];
-    .utl.addArg["I";();1;`c];
+    .utl.addOpt["foo";"J";`a];
+    .utl.addArg["J";();1;`b];
+    .utl.addArg["J";();1;`c];
     .utl.addOpt["baz";"S";`d];
     .utl.addOpt["hello";1b;`e];
     .utl.parseArgs[];
@@ -210,33 +210,33 @@
     };
   should["consume remaining arguments when the number of arguments handled is enlisted"]{
     .utl.arg.args:("10";"20");
-    .utl.addArg["I";();1,();`a];
+    .utl.addArg["J";();1,();`a];
     .utl.parseArgs[];
     a mustmatch 10 20;
     .utl.arg.args mustmatch ();
     };
   should["process all remaining arguments properly when the number of arguments to be handled is zero or the remaining arguments"]{
     .utl.arg.args:("10";"20");
-    .utl.addArg["I";10;0,();`a];
+    .utl.addArg["J";10;0,();`a];
     .utl.parseArgs[];
     a mustmatch 10 20;
     `.utl.arg.posArgs mock ();
     .utl.arg.args:enlist ("10");
-    .utl.addArg["I";10;0,();`a];
+    .utl.addArg["J";10;0,();`a];
     .utl.parseArgs[];
     a mustmatch enlist 10;
     `a mock 0;
     `.utl.arg.posArgs mock ();
     .utl.arg.args:enlist ("10");
-    .utl.addArg["I";0;0;`a];
+    .utl.addArg["J";0;0;`a];
     .utl.parseArgs[];
     a mustmatch 10;
     `b mock 0;
     `a mock 0;
     `.utl.arg.posArgs mock ();
     .utl.arg.args:("10";"20");
-    .utl.addArg["I";0;0;`a];
-    .utl.addArg["I";0;0;`b];
+    .utl.addArg["J";0;0;`a];
+    .utl.addArg["J";0;0;`b];
     .utl.parseArgs[];
     a mustmatch 10;
     b mustmatch 20;
@@ -255,7 +255,7 @@
     `b mock ();
     .utl.arg.args:("--help";"21";"baz");
     .utl.addArg["S";`foo;0;`a];
-    .utl.addOptDef["help";"I";10;`b];
+    .utl.addOptDef["help";"J";10;`b];
     .utl.parseArgs[];
     a mustmatch `baz;
     b mustmatch 21;
@@ -265,7 +265,7 @@
     `c mock ();
     .utl.arg.args:("baz";"--help";"21";"bat";"boo");
     .utl.addArg["S";`foo;0;`a];
-    .utl.addOptDef["help";"I";10;`b];
+    .utl.addOptDef["help";"J";10;`b];
     .utl.addArg["S";`bat`blah;0,();`c];
     .utl.parseArgs[];
     a mustmatch `baz;
@@ -275,8 +275,8 @@
   should["treat arguments taking exactly 1 value as atoms and all others as lists"]{
     `b mock `;
     .utl.arg.args:("10";"20");
-    .utl.addArg["I";();1;`a];
-    .utl.addArg["I";();1,();`b];
+    .utl.addArg["J";();1;`a];
+    .utl.addArg["J";();1,();`b];
     .utl.parseArgs[];
     a mustmatch 10;
     b mustmatch (),20;
