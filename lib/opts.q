@@ -7,7 +7,7 @@ arg.boolOpts:()
 arg.regOpts:()
 arg.regDefOpts:()
 arg.posArgs:()
-arg.typeDict:typeDict:(("*";0b;1b),"BXHIJEFCSMDZUVT")!("\"String Literal\"";"Disable Flag";"Enable Flag";"BOOL";"BYTE";"SHORT";"INT";"LONG";"REAL";"FLOAT";"CHARACTER";"SYMBOL";"YYYY.MM";"YYYY.MM.DD";"YYYY.MM.DDTHH:MM:SS.mmm";"HH:MM";"HH:MM:SS";"HH:MM:SS.mmm")
+arg.typeDict:typeDict:(("*";0b;1b),"BGXHIJEFCSPMDZNUVT")!("\"String Literal\"";"Disable Flag";"Enable Flag";"BOOL";"GUID";"BYTE";"SHORT";"INT";"LONG";"REAL";"FLOAT";"CHARACTER";"SYMBOL";"YYYY.MM.DDDHH:MM:SS.mmmmmmmmm";"YYYY.MM";"YYYY.MM.DD";"YYYY.MM.DDTHH:MM:SS.mmm";"NDHH:MM:SS.mmmmmmmmm";"HH:MM";"HH:MM:SS";"HH:MM:SS.mmm")
 
 / Pass 1b or 0b as typ to affirm/disaffirm that a param is used
 / For instance, we might have verbosity turned off by seeing if the quiet flag is present:

@@ -1,3 +1,5 @@
+VERSION 3.2.0 -- 2016.01.04
+* Added support for parsing timestamp, timespan, and GUID
 * Added support for package substructure to file loading facility
 ** Use by setting .utl.PKGSTRUCTURE to any symbol. Package loader will now expect your code to have the following layout (.e.g. if PKGSTRUCTURE is `lib) :
    /path/to/QPATH:
