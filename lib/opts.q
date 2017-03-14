@@ -73,7 +73,7 @@ arg.filterFlags:{"--" ,/: "," vs (),x}
 arg.filterVals:{$[1h ~ type x;any x;first x where not () ~/: x]}
 
 arg.getRegOpt:{
-  l:where arg.args like x,"*";
+  l:where (arg.args like x,"=*") or arg.args like x;
   / Options where the param values are separate from the param flag (value is at next index)
   separated: x ~/: arg.args l;
   r:$[count separated;

@@ -1,3 +1,6 @@
+VERSION 3.2.1 -- 2017.03.14
+* Fixed bug where options which were prefixes of other options would cause the longer options to be ignored
+
 VERSION 3.2.0 -- 2016.01.04
 * Added support for parsing timestamp, timespan, and GUID
 * Added support for package substructure to file loading facility

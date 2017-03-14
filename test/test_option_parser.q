@@ -40,6 +40,13 @@
     b mustmatch 11;
     c mustmatch 12;
     };
+  should["allow multiple options to have the same prefix"]{
+    .utl.addOptDef["baz";"S";`none;`a];
+    .utl.addOptDef["baz-bar";"J";12;`b];
+    .utl.parseArgs[];
+    a mustmatch `trade;
+    b mustmatch 10;
+    };
   should["let multiple options be parsed by the same parser"]{
     .utl.addOpt["foo,bar";"I";`a];
     .utl.parseArgs[];
